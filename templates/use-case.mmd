@@ -1,0 +1,42 @@
+%% 用例图：电商平台核心用例
+%% 用途：表达参与者、用例、系统边界与 include/extend 关系
+flowchart LR
+    CUST(["顾客"])
+    ADMIN(["运营管理员"])
+    OPS(["运维人员"])
+
+    subgraph SYS["电商平台"]
+        direction TB
+        UC1(["浏览与搜索商品"])
+        UC2(["加入购物车"])
+        UC3(["提交订单"])
+        UC4(["在线支付"])
+        UC5(["查看物流"])
+        UC6(["申请退款"])
+        UC7(["管理商品"])
+        UC8(["处理退款"])
+        UC9(["监控系统运行"])
+        UC10(["登录认证"])
+    end
+
+    CUST --> UC1
+    CUST --> UC2
+    CUST --> UC3
+    CUST --> UC4
+    CUST --> UC5
+    CUST --> UC6
+
+    ADMIN --> UC7
+    ADMIN --> UC8
+    OPS --> UC9
+
+    UC3 -.->|include| UC10
+    UC4 -.->|include| UC10
+    UC6 -.->|include| UC10
+    UC7 -.->|include| UC10
+    UC8 -.->|extend| UC6
+
+    style SYS fill:#f7f9fc,stroke:#4a6fa5,stroke-width:1px
+    style CUST fill:#eef4ff,stroke:#4a6fa5
+    style ADMIN fill:#eaf7ee,stroke:#3f8f5f
+    style OPS fill:#fff6e6,stroke:#c98a2b

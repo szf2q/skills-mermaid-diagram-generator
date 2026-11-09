@@ -1,0 +1,53 @@
+%% 逻辑结构图：电商平台逻辑分层
+%% 用途：表达分层职责与依赖，不包含物理部署信息
+flowchart TB
+    subgraph PRESENT["表现层"]
+        direction LR
+        WEB["Web 前端"]
+        APP["移动端"]
+        OPEN["开放 API"]
+    end
+
+    subgraph BUSINESS["业务应用层"]
+        direction LR
+        UC["用户中心"]
+        OC["订单中心"]
+        PC["支付中心"]
+        IC["库存中心"]
+        MC["营销中心"]
+    end
+
+    subgraph DOMAIN["领域服务层"]
+        direction LR
+        ACCOUNT["账户领域服务"]
+        TRADE["交易领域服务"]
+        PRODUCT["商品领域服务"]
+        PROMOTION["促销领域服务"]
+    end
+
+    subgraph REPO["数据访问层"]
+        direction LR
+        MAPPER["MyBatis Mapper"]
+        CACHE["缓存访问组件"]
+        MQ["消息生产/消费组件"]
+        SEARCH["检索访问组件"]
+    end
+
+    subgraph INFRA["基础设施层"]
+        direction LR
+        MYSQL[("MySQL")]
+        REDIS[("Redis")]
+        KAFKA[("Kafka")]
+        ES[("Elasticsearch")]
+    end
+
+    PRESENT --> BUSINESS
+    BUSINESS --> DOMAIN
+    DOMAIN --> REPO
+    REPO --> INFRA
+
+    style PRESENT fill:#eef4ff,stroke:#4a6fa5,stroke-width:1px
+    style BUSINESS fill:#eaf7ee,stroke:#3f8f5f,stroke-width:1px
+    style DOMAIN fill:#fff6e6,stroke:#c98a2b,stroke-width:1px
+    style REPO fill:#f3edff,stroke:#7a5bb5,stroke-width:1px
+    style INFRA fill:#fdeeee,stroke:#b85c5c,stroke-width:1px

@@ -1,0 +1,48 @@
+%% 组成结构图：智慧园区管理平台组成分解
+%% 用途：表达系统→子系统→模块→组件的整体-部分结构
+flowchart TD
+    ROOT["智慧园区管理平台"]
+
+    subgraph S1["综合安防子系统"]
+        direction TB
+        A1["视频监控模块"] --> A11["设备接入组件"]
+        A1 --> A12["视频存储组件"]
+        A2["门禁控制模块"] --> A21["权限校验组件"]
+        A2 --> A22["开门记录组件"]
+        A3["报警联动模块"] --> A31["规则引擎组件"]
+        A3 --> A32["通知推送组件"]
+    end
+
+    subgraph S2["能源管理子系统"]
+        direction TB
+        B1["电表采集模块"] --> B11["协议适配组件"]
+        B1 --> B12["能耗统计组件"]
+        B2["告警管理模块"] --> B21["阈值配置组件"]
+        B2 --> B22["工单联动组件"]
+    end
+
+    subgraph S3["通行管理子系统"]
+        direction TB
+        C1["访客预约模块"] --> C11["预约登记组件"]
+        C1 --> C12["二维码通行组件"]
+        C2["车辆管理模块"] --> C21["车牌识别组件"]
+        C2 --> C22["道闸控制组件"]
+    end
+
+    subgraph S4["运营管理子系统"]
+        direction TB
+        D1["租户管理模块"]
+        D2["账单管理模块"]
+        D3["报表分析模块"]
+    end
+
+    ROOT --> S1
+    ROOT --> S2
+    ROOT --> S3
+    ROOT --> S4
+
+    style ROOT fill:#eef4ff,stroke:#4a6fa5,stroke-width:2px
+    style S1 fill:#f5f9ff,stroke:#4a6fa5
+    style S2 fill:#f3fbf5,stroke:#3f8f5f
+    style S3 fill:#fffaf0,stroke:#c98a2b
+    style S4 fill:#faf7ff,stroke:#7a5bb5

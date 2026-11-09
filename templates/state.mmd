@@ -1,0 +1,29 @@
+%% 状态图：订单状态流转
+%% 用途：表达状态、事件、守卫条件、动作与终态
+stateDiagram-v2
+    state "待支付" as PENDING
+    state "已支付" as PAID
+    state "已发货" as SHIPPED
+    state "已完成" as COMPLETED
+    state "已取消" as CANCELLED
+    state "退款中" as REFUNDING
+    state "已退款" as REFUNDED
+
+    [*] --> PENDING : 创建订单
+
+    PENDING --> PAID : 支付成功
+    PENDING --> CANCELLED : 超时未支付 / 自动关单
+    PENDING --> CANCELLED : 用户取消
+
+    PAID --> SHIPPED : 商家发货
+    PAID --> REFUNDING : 申请退款 [未发货]
+
+    SHIPPED --> COMPLETED : 确认收货
+    SHIPPED --> REFUNDING : 申请退货退款
+
+    REFUNDING --> REFUNDED : 退款成功
+    REFUNDING --> PAID : 退款驳回
+
+    COMPLETED --> [*]
+    CANCELLED --> [*]
+    REFUNDED --> [*]

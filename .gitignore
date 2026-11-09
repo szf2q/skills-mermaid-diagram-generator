@@ -1,0 +1,5 @@
+node_modules/
+.render-tmp/
+*.log
+.DS_Store
+Thumbs.db

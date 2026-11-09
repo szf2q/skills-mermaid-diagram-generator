@@ -1,0 +1,72 @@
+%% 系统架构图：电商平台总体架构
+%% 用途：表达分层、系统边界、关键中间件与主要调用/数据流向
+flowchart TB
+    subgraph CLIENT["客户端层"]
+        direction LR
+        WEB["Web 门户<br/>Vue 3"]
+        APP["移动 App<br/>Android / iOS"]
+        MINI["小程序"]
+    end
+
+    subgraph ACCESS["接入层"]
+        direction LR
+        LB["负载均衡<br/>Nginx"]
+        GW["API 网关<br/>Spring Cloud Gateway"]
+        AUTH["认证鉴权<br/>OAuth2 / JWT"]
+    end
+
+    subgraph SERVICE["应用服务层"]
+        direction LR
+        USER["用户服务"]
+        ORDER["订单服务"]
+        PAY["支付服务"]
+        STOCK["库存服务"]
+        NOTIFY["通知服务"]
+    end
+
+    subgraph MIDDLEWARE["中间件层"]
+        direction LR
+        MQ["消息队列<br/>Kafka"]
+        CACHE["分布式缓存<br/>Redis"]
+        SEARCH["搜索引擎<br/>Elasticsearch"]
+    end
+
+    subgraph DATA["数据层"]
+        direction LR
+        DB[("业务数据库<br/>MySQL 主从")]
+        DW[("数据仓库<br/>ClickHouse")]
+        OSS[("对象存储<br/>MinIO")]
+    end
+
+    subgraph EXTERNAL["外部系统"]
+        direction LR
+        THIRD_PAY["第三方支付"]
+        SMS["短信平台"]
+    end
+
+    CLIENT --> LB
+    LB --> GW
+    GW --> AUTH
+    GW --> USER
+    GW --> ORDER
+    GW --> PAY
+    GW --> STOCK
+    ORDER --> MQ
+    ORDER --> CACHE
+    ORDER --> STOCK
+    USER --> DB
+    ORDER --> DB
+    PAY --> DB
+    STOCK --> CACHE
+    SEARCH --> DW
+    MQ --> NOTIFY
+    PAY --> THIRD_PAY
+    NOTIFY --> SMS
+    USER --> OSS
+
+    style CLIENT fill:#eef4ff,stroke:#4a6fa5,stroke-width:1px
+    style ACCESS fill:#eaf7ee,stroke:#3f8f5f,stroke-width:1px
+    style SERVICE fill:#fff6e6,stroke:#c98a2b,stroke-width:1px
+    style MIDDLEWARE fill:#f3edff,stroke:#7a5bb5,stroke-width:1px
+    style DATA fill:#fdeeee,stroke:#b85c5c,stroke-width:1px
+    style EXTERNAL fill:#f5f5f5,stroke:#999999,stroke-width:1px

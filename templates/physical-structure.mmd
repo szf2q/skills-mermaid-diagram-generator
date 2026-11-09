@@ -1,0 +1,66 @@
+%% 物理结构图：电商平台生产环境部署
+%% 用途：表达网络区域、设备角色、数量、规格与部署关系
+flowchart TB
+    subgraph TERMINAL["用户终端"]
+        direction LR
+        PC["办公 PC<br/>Windows 11"]
+        MOBILE["移动终端<br/>Android / iOS"]
+    end
+
+    subgraph ACCESS["网络接入区"]
+        direction LR
+        FW["边界防火墙<br/>HA 双机"]
+        WAF["WAF<br/>反向代理"]
+        SLB["四层负载均衡<br/>2 台"]
+    end
+
+    subgraph DMZ["DMZ 区"]
+        direction LR
+        NGINX["Nginx 集群<br/>2 × 8C16G<br/>10.10.0.11-12"]
+    end
+
+    subgraph APP["应用服务器区"]
+        direction LR
+        APP1["应用节点 1<br/>8C16G<br/>10.10.1.11"]
+        APP2["应用节点 2<br/>8C16G<br/>10.10.1.12"]
+        JOB["定时任务节点<br/>4C8G<br/>10.10.1.21"]
+    end
+
+    subgraph DATA["数据服务器区"]
+        direction LR
+        MYSQL["MySQL 主从<br/>16C64G<br/>10.10.2.11-12"]
+        REDIS["Redis 哨兵<br/>8C16G<br/>10.10.2.21-23"]
+        ES["Elasticsearch<br/>3 节点<br/>10.10.2.31-33"]
+    end
+
+    subgraph OPS["运维与备份区"]
+        direction LR
+        BASTION["堡垒机"]
+        MONITOR["监控平台<br/>Prometheus + Grafana"]
+        BACKUP["备份存储<br/>NAS 20TB"]
+    end
+
+    PC --> FW
+    MOBILE --> FW
+    FW --> WAF
+    WAF --> SLB
+    SLB --> NGINX
+    NGINX --> APP1
+    NGINX --> APP2
+    APP1 --> MYSQL
+    APP2 --> MYSQL
+    APP1 --> REDIS
+    APP2 --> REDIS
+    APP1 --> ES
+    APP2 --> ES
+    JOB --> MYSQL
+    MYSQL --> BACKUP
+    BASTION --> APP
+    BASTION --> DATA
+
+    style TERMINAL fill:#f5f5f5,stroke:#999999,stroke-width:1px
+    style ACCESS fill:#eaf7ee,stroke:#3f8f5f,stroke-width:1px
+    style DMZ fill:#fff6e6,stroke:#c98a2b,stroke-width:1px
+    style APP fill:#eef4ff,stroke:#4a6fa5,stroke-width:1px
+    style DATA fill:#fdeeee,stroke:#b85c5c,stroke-width:1px
+    style OPS fill:#f3edff,stroke:#7a5bb5,stroke-width:1px

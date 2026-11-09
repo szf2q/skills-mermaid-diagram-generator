@@ -1,0 +1,32 @@
+%% 数据流图：订单处理数据流
+%% 用途：表达外部实体、加工、数据存储与带标签的数据流（不表达控制流）
+flowchart LR
+    CUST["外部实体<br/>顾客"]
+    ADMIN["外部实体<br/>运营人员"]
+
+    P1(("P1<br/>订单处理"))
+    P2(("P2<br/>支付处理"))
+    P3(("P3<br/>库存更新"))
+
+    D1[("D1 订单表")]
+    D2[("D2 支付流水表")]
+    D3[("D3 商品库存表")]
+
+    CUST -->|"订单请求"| P1
+    P1 -->|"订单记录"| D1
+    P1 -->|"支付请求"| P2
+    P2 -->|"支付流水"| D2
+    P2 -->|"支付结果"| P1
+    P1 -->|"扣减指令"| P3
+    D1 -->|"订单明细"| P3
+    P3 -->|"库存数量"| D3
+    D3 -->|"可用库存"| P1
+    P1 -->|"订单状态"| CUST
+    ADMIN -->|"退款指令"| P2
+    P2 -->|"退款结果"| ADMIN
+
+    style CUST fill:#eef4ff,stroke:#4a6fa5
+    style ADMIN fill:#eef4ff,stroke:#4a6fa5
+    style P1 fill:#fff6e6,stroke:#c98a2b
+    style P2 fill:#fff6e6,stroke:#c98a2b
+    style P3 fill:#fff6e6,stroke:#c98a2b

@@ -1,0 +1,71 @@
+%% 类图：订单领域核心模型
+%% 用途：表达类、属性、方法、继承/组合/聚合/依赖关系
+classDiagram
+    direction LR
+
+    class User {
+        +Long id
+        +String username
+        +String passwordHash
+        +String email
+        +login(String username, String password) boolean
+        +changePassword(String newPassword) void
+    }
+
+    class Order {
+        +Long id
+        +String orderNo
+        +BigDecimal amount
+        +OrderStatus status
+        +create() Order
+        +cancel() void
+        +pay() void
+    }
+
+    class OrderItem {
+        +Long id
+        +Long productId
+        +Integer quantity
+        +BigDecimal price
+        +subtotal() BigDecimal
+    }
+
+    class Payment {
+        +Long id
+        +String payNo
+        +BigDecimal amount
+        +PaymentStatus status
+        +pay() boolean
+        +refund() boolean
+    }
+
+    class Product {
+        +Long id
+        +String name
+        +BigDecimal price
+        +Integer stock
+        +deductStock(Integer quantity) void
+    }
+
+    class OrderStatus {
+        <<enumeration>>
+        PENDING
+        PAID
+        SHIPPED
+        COMPLETED
+        CANCELLED
+    }
+
+    class PaymentStatus {
+        <<enumeration>>
+        UNPAID
+        SUCCESS
+        REFUNDED
+    }
+
+    User "1" --> "0..*" Order : 下单
+    Order "1" *-- "1..*" OrderItem : 包含
+    Order "1" --> "0..1" Payment : 支付
+    OrderItem "*" --> "1" Product : 引用
+    Order --> OrderStatus : 当前状态
+    Payment --> PaymentStatus : 当前状态

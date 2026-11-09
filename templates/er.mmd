@@ -1,0 +1,48 @@
+%% ER 图：电商订单核心数据模型
+%% 用途：表达实体、属性、主外键与基数关系
+erDiagram
+    CUSTOMER ||--o{ ORDER : "下单"
+    ORDER ||--|{ ORDER_ITEM : "包含"
+    PRODUCT ||--o{ ORDER_ITEM : "被购买"
+    ORDER ||--o| PAYMENT : "支付"
+
+    CUSTOMER {
+        bigint id PK "主键"
+        varchar username UK "用户名"
+        varchar phone "手机号"
+        varchar email "邮箱"
+        datetime created_at "创建时间"
+    }
+
+    ORDER {
+        bigint id PK "主键"
+        varchar order_no UK "订单号"
+        bigint customer_id FK "客户 ID"
+        decimal amount "订单金额"
+        varchar status "订单状态"
+        datetime created_at "创建时间"
+    }
+
+    ORDER_ITEM {
+        bigint id PK "主键"
+        bigint order_id FK "订单 ID"
+        bigint product_id FK "商品 ID"
+        int quantity "购买数量"
+        decimal price "成交单价"
+    }
+
+    PRODUCT {
+        bigint id PK "主键"
+        varchar name "商品名称"
+        decimal price "销售价格"
+        int stock "库存数量"
+    }
+
+    PAYMENT {
+        bigint id PK "主键"
+        bigint order_id FK "订单 ID"
+        varchar pay_no UK "支付流水号"
+        decimal amount "支付金额"
+        varchar status "支付状态"
+        datetime paid_at "支付时间"
+    }

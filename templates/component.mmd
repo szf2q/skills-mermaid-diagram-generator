@@ -1,0 +1,30 @@
+%% 组件图：订单中心组件与依赖
+%% 用途：表达容器边界、组件职责、接口与依赖协议
+C4Component
+    title 订单中心组件图
+
+    Container_Boundary(api, "订单服务") {
+        Component(controller, "OrderController", "Spring MVC", "接收订单请求并完成参数校验")
+        Component(service, "OrderService", "Spring Service", "订单创建、取消与状态流转编排")
+        Component(domain, "OrderDomain", "DDD 领域模型", "订单聚合与业务规则")
+        Component(repo, "OrderRepository", "MyBatis", "订单数据持久化")
+        Component(payClient, "PaymentClient", "OpenFeign", "调用支付服务")
+        Component(event, "OrderEventPublisher", "Kafka Producer", "发布订单领域事件")
+    }
+
+    Container_Boundary(ext, "外部依赖") {
+        ComponentDb(db, "MySQL", "关系型数据库", "存储订单与订单明细")
+        ComponentQueue(mq, "Kafka", "消息中间件", "订单事件总线")
+        Component(cache, "Redis", "分布式缓存", "订单幂等与热点数据")
+        Component(pay, "支付服务", "内部服务", "提供支付与退款能力")
+    }
+
+    Rel(controller, service, "调用")
+    Rel(service, domain, "使用")
+    Rel(service, repo, "读写")
+    Rel(service, payClient, "支付/退款")
+    Rel(service, event, "发布事件")
+    Rel(repo, db, "SQL")
+    Rel(service, cache, "读写")
+    Rel(event, mq, "发送消息")
+    Rel(payClient, pay, "HTTP")

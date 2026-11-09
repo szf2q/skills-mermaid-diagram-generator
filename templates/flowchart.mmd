@@ -1,0 +1,25 @@
+%% 流程图：订单创建主流程
+%% 用途：表达步骤、判断分支、异常处理与起止
+flowchart TD
+    S([开始]) --> A["接收订单请求"]
+    A --> B{"参数与库存校验通过?"}
+    B -->|"否"| E1["返回校验失败原因"]
+    B -->|"是"| C["锁定库存"]
+    C --> D["创建订单记录"]
+    D --> F{"调用支付成功?"}
+    F -->|"否"| G["取消订单"]
+    G --> H["释放库存"]
+    H --> E2["返回支付失败"]
+    F -->|"是"| I["更新订单状态为已支付"]
+    I --> J["发送履约消息"]
+    J --> K["返回下单成功"]
+    E1 --> END([结束])
+    E2 --> END
+    K --> END
+
+    style S fill:#eaf7ee,stroke:#3f8f5f
+    style END fill:#eaf7ee,stroke:#3f8f5f
+    style B fill:#fff6e6,stroke:#c98a2b
+    style F fill:#fff6e6,stroke:#c98a2b
+    style E1 fill:#fdeeee,stroke:#b85c5c
+    style E2 fill:#fdeeee,stroke:#b85c5c
