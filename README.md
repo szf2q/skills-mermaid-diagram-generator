@@ -1,13 +1,14 @@
 # Mermaid 架构与设计图生成器
 
-一个用于把文字描述、代码结构或系统方案转换成规范 Mermaid 图的技能包。内置 11 类常用架构/设计图模板与跨平台渲染脚本，一次产出可维护的 `.mmd` 源文件和高清 `.png` 图片。
+一个用于把文字描述、代码结构或系统方案转换成规范 Mermaid 图的技能包。内置 27 类常用架构、设计与计划图模板与跨平台渲染脚本，一次产出可维护的 `.mmd` 源文件和高清 `.png` 图片。
 
 ## 特性
 
-- **覆盖常见设计图**：系统架构图、物理结构图、逻辑结构图、组件图、类图、用例图、状态图、数据流图、流程图、ER 图、组成结构图。
+- **覆盖常见设计图**：系统架构图、物理结构图、逻辑结构图、组件图、C4 上下文/容器/动态/部署图、类图、对象图、包图、用例图、状态图、时序图、活动图、泳道图、数据流图、流程图、ER 图、组成结构图、需求图。
+- **覆盖计划与沟通图**：甘特图、思维导图、用户旅程图、看板、时间线、Git 图。
 - **图类型按语义选择**：根据要表达的重点推荐合适的 Mermaid 类型，而不是所有需求都用流程图。
 - **源图与图片同时产出**：`.mmd` 与 `.png` 同名同目录，便于版本管理与文档引用。
-- **开箱即用的模板**：`templates/` 提供 11 类图的参考实现，`examples/` 提供对应渲染样例。
+- **开箱即用的模板**：`templates/` 提供 27 类图的参考实现，`examples/` 提供对应渲染样例。
 - **跨平台批量渲染**：自动探测 `mmdc` 与 Chrome/Chromium，支持容器内无沙箱运行、批量目录渲染、主题与缩放配置。
 - **版本自适应**：兼容 mermaid-cli 12+ 的 `--size` 参数与旧版本的 `-w/--width` 参数。
 
@@ -26,6 +27,22 @@
 | 流程图 | 步骤、判断分支、循环、起止 | `flowchart TD` | [flowchart.mmd](templates/flowchart.mmd) |
 | ER 图 | 实体、属性、主外键、基数关系 | `erDiagram` | [er.mmd](templates/er.mmd) |
 | 组成结构图 | 系统→子系统→模块→组件的整体-部分分解 | `flowchart TD` 树形 `subgraph` | [composition-structure.mmd](templates/composition-structure.mmd) |
+| 时序图 | 参与者、消息顺序、同步/异步、条件与循环 | `sequenceDiagram` | [sequence.mmd](templates/sequence.mmd) |
+| 活动图 | 活动、判断、分叉汇合、并发与终态 | `flowchart TD` | [activity.mmd](templates/activity.mmd) |
+| 泳道图 | 跨角色/系统的职责划分与流转 | `flowchart LR` + 纵向泳道 | [swimlane.mmd](templates/swimlane.mmd) |
+| C4 上下文图 | 系统边界、使用角色、外部系统 | `C4Context` | [c4-context.mmd](templates/c4-context.mmd) |
+| C4 容器图 | 容器边界、技术选型、容器间依赖 | `C4Container` | [c4-container.mmd](templates/c4-container.mmd) |
+| C4 动态图 | 一次业务场景中的协作顺序 | `C4Dynamic` | [c4-dynamic.mmd](templates/c4-dynamic.mmd) |
+| 部署图 | 部署节点、运行容器、制品与网络关系 | `C4Deployment` | [deployment.mmd](templates/deployment.mmd) |
+| 包图 / 模块依赖图 | 包边界、模块职责、依赖方向与分层约束 | `flowchart TB` | [package.mmd](templates/package.mmd) |
+| 对象图 | 运行时对象实例、属性取值与链接 | `classDiagram` | [object.mmd](templates/object.mmd) |
+| 需求图 | 需求、风险、验证方式、满足关系 | `requirementDiagram` | [requirement.mmd](templates/requirement.mmd) |
+| 甘特图 | 任务、工期、依赖与里程碑 | `gantt` | [gantt.mmd](templates/gantt.mmd) |
+| 思维导图 | 主题发散与层级归类 | `mindmap` | [mindmap.mmd](templates/mindmap.mmd) |
+| 用户旅程图 | 阶段、触点、情绪评分 | `journey` | [journey.mmd](templates/journey.mmd) |
+| 看板 | 工作项与流转状态 | `kanban` | [kanban.mmd](templates/kanban.mmd) |
+| 时间线 | 按时间排列的关键事件 | `timeline` | [timeline.mmd](templates/timeline.mmd) |
+| Git 图 | 分支、提交、合并与发布标签 | `gitGraph` | [gitgraph.mmd](templates/gitgraph.mmd) |
 
 ## 目录结构
 
@@ -36,18 +53,34 @@ mermaid-diagram-generator/
 ├── scripts/
 │   ├── render.sh              # 跨平台渲染入口（bash）
 │   └── render-mermaid.mjs     # 批量渲染、mmdc 与 Chrome 探测
-├── templates/                 # 11 类图的 Mermaid 模板
+├── templates/                 # 27 类图的 Mermaid 模板
 │   ├── system-architecture.mmd
 │   ├── physical-structure.mmd
 │   ├── logical-structure.mmd
 │   ├── component.mmd
+│   ├── c4-context.mmd
+│   ├── c4-container.mmd
+│   ├── c4-dynamic.mmd
+│   ├── deployment.mmd
 │   ├── class.mmd
+│   ├── object.mmd
+│   ├── package.mmd
 │   ├── use-case.mmd
+│   ├── sequence.mmd
+│   ├── activity.mmd
+│   ├── swimlane.mmd
 │   ├── state.mmd
 │   ├── data-flow.mmd
 │   ├── flowchart.mmd
 │   ├── er.mmd
-│   └── composition-structure.mmd
+│   ├── composition-structure.mmd
+│   ├── requirement.mmd
+│   ├── gantt.mmd
+│   ├── mindmap.mmd
+│   ├── journey.mmd
+│   ├── kanban.mmd
+│   ├── timeline.mmd
+│   └── gitgraph.mmd
 └── examples/                  # 模板对应的 .png 渲染样例
 ```
 
@@ -56,6 +89,7 @@ mermaid-diagram-generator/
 - Node.js 18 及以上
 - mermaid-cli（`@mermaid-js/mermaid-cli`），或允许脚本通过 `npx` 临时拉取
 - Chrome / Chromium（Puppeteer 缓存中的浏览器也可被自动探测）
+- C4 系列、`kanban`、`timeline`、`mindmap`、`requirementDiagram` 需要 Mermaid 10+/11+，建议使用最新版 mermaid-cli
 
 安装 mermaid-cli：
 
@@ -121,6 +155,22 @@ bash scripts/render.sh --check
 | 流程图 | ![流程图](examples/flowchart.png) |
 | ER 图 | ![ER 图](examples/er.png) |
 | 组成结构图 | ![组成结构图](examples/composition-structure.png) |
+| 时序图 | ![时序图](examples/sequence.png) |
+| 活动图 | ![活动图](examples/activity.png) |
+| 泳道图 | ![泳道图](examples/swimlane.png) |
+| C4 上下文图 | ![C4 上下文图](examples/c4-context.png) |
+| C4 容器图 | ![C4 容器图](examples/c4-container.png) |
+| C4 动态图 | ![C4 动态图](examples/c4-dynamic.png) |
+| 部署图 | ![部署图](examples/deployment.png) |
+| 包图 / 模块依赖图 | ![包图](examples/package.png) |
+| 对象图 | ![对象图](examples/object.png) |
+| 需求图 | ![需求图](examples/requirement.png) |
+| 甘特图 | ![甘特图](examples/gantt.png) |
+| 思维导图 | ![思维导图](examples/mindmap.png) |
+| 用户旅程图 | ![用户旅程图](examples/journey.png) |
+| 看板 | ![看板](examples/kanban.png) |
+| 时间线 | ![时间线](examples/timeline.png) |
+| Git 图 | ![Git 图](examples/gitgraph.png) |
 
 ## 编写约定
 
@@ -131,6 +181,8 @@ bash scripts/render.sh --check
 - 分层架构用 `TB`，数据流/时序感强的图用 `LR`；单张图方向保持一致。
 - 单图节点建议不超过 30 个，超出时按业务域拆图。
 - `C4Component`、`architecture-beta`、`block-beta` 需要 Mermaid 11+，版本不确定时优先使用 `flowchart`。
+- 需求图中 `id` 使用 `R001` 这类字母数字形式，中文 `text` 必须加双引号，否则会触发词法错误。
+- 思维导图使用 2 空格递增缩进，禁止混用 Tab；甘特图必须声明与实际日期一致的 `dateFormat`。
 
 ## 常见问题
 
