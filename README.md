@@ -7,6 +7,7 @@
 - **覆盖常见设计图**：系统架构图、物理结构图、逻辑结构图、组件图、C4 上下文/容器/动态/部署图、类图、对象图、包图、用例图、状态图、时序图、活动图、泳道图、数据流图、流程图、ER 图、组成结构图、需求图。
 - **覆盖计划与沟通图**：甘特图、思维导图、用户旅程图、看板、时间线、Git 图。
 - **图类型按语义选择**：根据要表达的重点推荐合适的 Mermaid 类型，而不是所有需求都用流程图。
+- **按需加载降耗**：`SKILL.md` 只保留路由表、流程与通用规范，各类图的详细设计规范拆分到 `references/`；一次任务只读取所需的一份规范与一个模板。
 - **源图与图片同时产出**：`.mmd` 与 `.png` 同名同目录，便于版本管理与文档引用。
 - **开箱即用的模板**：`templates/` 提供 27 类图的参考实现，`examples/` 提供对应渲染样例。
 - **跨平台批量渲染**：自动探测 `mmdc` 与 Chrome/Chromium，支持容器内无沙箱运行、批量目录渲染、主题与缩放配置。
@@ -48,8 +49,15 @@
 
 ```
 mermaid-diagram-generator/
-├── SKILL.md                   # 技能说明：图类型选择、设计规范、排查指南
+├── SKILL.md                   # 索引：路由表、工作流程、通用规范
 ├── README.md                  # 项目说明（本文件）
+├── references/                # 按需加载的详细设计规范
+│   ├── architecture.md        # 系统架构/物理/逻辑/组成/包图
+│   ├── c4.md                  # 组件/C4 四层/部署
+│   ├── uml.md                 # 类/对象/用例/状态/时序/活动/泳道
+│   ├── data-process.md        # 数据流/流程/ER/需求
+│   ├── planning.md            # 甘特/导图/旅程/看板/时间线/Git
+│   └── troubleshooting.md     # 报错排查与版本降级
 ├── scripts/
 │   ├── render.sh              # 跨平台渲染入口（bash）
 │   └── render-mermaid.mjs     # 批量渲染、mmdc 与 Chrome 探测
@@ -101,7 +109,7 @@ npm i -g @mermaid-js/mermaid-cli
 
 ### 1. 通过技能使用
 
-当需要"画架构图/流程图/ER 图"或"把方案转成图"时，按 [SKILL.md](SKILL.md) 的流程：先判定图类型，复制最接近的模板改造，写入 `.mmd`，再渲染为 `.png`。
+当需要"画架构图/流程图/ER 图"或"把方案转成图"时，按 [SKILL.md](SKILL.md) 的流程：先查路由表判定图类型，读取 `references/` 中对应的规范文档，复制最接近的模板改造，写入 `.mmd`，再渲染为 `.png`。一次任务只需读取一份规范和一个模板。
 
 ### 2. 命令行渲染
 
@@ -194,6 +202,8 @@ bash scripts/render.sh --check
 | 图片空白或被裁剪 | 画布太小或图过大 | 提高 `--width`、减少单图节点数、拆图 |
 | `mmdc: command not found` | 未安装 mermaid-cli | `npm i -g @mermaid-js/mermaid-cli` 或使用 `npx` |
 | 连线穿越节点 | 布局方向或节点过多 | 调整 `direction`、拆 `subgraph`、减少跨组连线 |
+
+更完整的报错定位、Mermaid 版本要求与低版本降级方案见 [references/troubleshooting.md](references/troubleshooting.md)。
 
 ## 交付检查清单
 
