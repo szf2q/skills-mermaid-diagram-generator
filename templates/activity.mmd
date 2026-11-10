@@ -1,0 +1,25 @@
+%% 活动图：订单履约活动流程
+%% 用途：用 UML 活动图语义表达活动、判断、分叉汇合与终态
+%% 说明：Mermaid 无独立 activityDiagram，使用 flowchart TD 近似表达
+flowchart TD
+    START([开始]) --> RECV["接收支付成功事件"]
+    RECV --> VALID{"事件幂等校验"}
+    VALID -- 重复 --> IGNORE["忽略事件"]
+    IGNORE --> END([结束])
+    VALID -- 首次 --> FORK["分叉"]
+
+    FORK --> ALLOC["分配仓库"]
+    FORK --> INVOICE["开具发票"]
+    FORK --> NOTIFY["通知用户"]
+
+    ALLOC --> JOIN["汇合"]
+    INVOICE --> JOIN
+    NOTIFY --> JOIN
+
+    JOIN --> SHIP{"库存所在仓有货？"}
+    SHIP -- 是 --> OUT["生成出库单"]
+    SHIP -- 否 --> TRANSFER["生成调拨单"]
+    TRANSFER --> OUT
+
+    OUT --> DELIVER["推送物流平台"]
+    DELIVER --> END

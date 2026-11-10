@@ -1,0 +1,44 @@
+%% 部署图：电商平台生产环境部署
+%% 用途：表达部署节点、运行容器、制品与网络关系（C4 Deployment）
+C4Deployment
+    title 电商平台生产环境部署图
+
+    Deployment_Node(user, "用户终端", "浏览器 / 移动 App") {
+        Container(spa, "Web 前端", "Vue 3", "静态资源由 CDN 分发")
+        Container(app, "移动 App", "Android / iOS", "原生与 H5 混合")
+    }
+
+    Deployment_Node(edge, "接入区", "公网入口") {
+        Deployment_Node(waf, "WAF / 负载均衡", "Nginx + WAF") {
+            Container(gw, "API 网关", "Spring Cloud Gateway", "路由、鉴权、限流")
+        }
+    }
+
+    Deployment_Node(appzone, "应用区", "Kubernetes 集群") {
+        Deployment_Node(k8s, "业务 Pod（多副本）", "K8s Deployment") {
+            Container(order, "订单服务", "Spring Boot", "订单生命周期管理")
+            Container(pay, "支付服务", "Spring Boot", "支付与对账")
+            Container(stock, "库存服务", "Spring Boot", "库存预占与扣减")
+        }
+    }
+
+    Deployment_Node(datazone, "数据区", "内网隔离") {
+        Deployment_Node(mysql, "MySQL 集群", "主从 + MHA") {
+            ContainerDb(db, "订单库", "MySQL 8.0", "订单与支付数据")
+        }
+        Deployment_Node(redis, "Redis 集群", "Cluster 模式") {
+            ContainerDb(cache, "缓存", "Redis 7", "会话与热点数据")
+        }
+        Deployment_Node(kafka, "消息集群", "Kafka 3.x") {
+            ContainerQueue(mq, "订单事件 Topic", "Kafka", "支付成功与履约事件")
+        }
+    }
+
+    Rel(user, gw, "发起 HTTPS 请求", "HTTPS/443")
+    Rel(gw, order, "转发订单请求", "HTTP/8080")
+    Rel(gw, pay, "转发支付请求", "HTTP/8080")
+    Rel(order, stock, "预占库存", "gRPC")
+    Rel(order, db, "读写订单", "JDBC")
+    Rel(order, cache, "读写缓存", "RESP")
+    Rel(pay, mq, "发布支付事件", "Kafka 协议")
+    Rel(mq, order, "投递支付结果", "Kafka 协议")

@@ -1,0 +1,44 @@
+%% 包图 / 模块依赖图：订单领域分层
+%% 用途：表达包边界、模块职责与依赖方向，约束只能上层依赖下层
+flowchart TB
+    subgraph API["api 接口层"]
+        direction LR
+        API_WEB["web-api"]
+        API_RPC["rpc-api"]
+    end
+
+    subgraph APP["application 应用层"]
+        direction LR
+        APP_ORDER["order-app"]
+        APP_PAY["payment-app"]
+    end
+
+    subgraph DOMAIN["domain 领域层"]
+        direction LR
+        DOM_ORDER["order-domain"]
+        DOM_PAY["payment-domain"]
+        DOM_STOCK["stock-domain"]
+    end
+
+    subgraph INFRA["infrastructure 基础设施层"]
+        direction LR
+        INFRA_DB["persistence"]
+        INFRA_MQ["messaging"]
+        INFRA_CACHE["cache"]
+    end
+
+    API_WEB --> APP_ORDER
+    API_RPC --> APP_ORDER
+    API_WEB --> APP_PAY
+    APP_ORDER --> DOM_ORDER
+    APP_PAY --> DOM_PAY
+    APP_ORDER --> DOM_STOCK
+    DOM_ORDER --> INFRA_DB
+    DOM_PAY --> INFRA_DB
+    DOM_STOCK --> INFRA_CACHE
+    APP_ORDER --> INFRA_MQ
+
+    style API fill:#eef4ff,stroke:#4a6fa5
+    style APP fill:#eaf7ee,stroke:#3f8f5f
+    style DOMAIN fill:#fff6e6,stroke:#c98a2b
+    style INFRA fill:#f3edff,stroke:#7a5bb5

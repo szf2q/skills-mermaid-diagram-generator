@@ -1,0 +1,21 @@
+%% C4 系统上下文图：电商平台
+%% 用途：表达系统边界、使用角色与外部系统依赖
+C4Context
+    title 电商平台系统上下文图
+
+    Person(customer, "顾客", "浏览、下单、支付与售后")
+    Person(operator, "运营人员", "商品、活动与订单管理")
+
+    System(ecommerce, "电商平台", "商品、订单、支付与履约的核心系统")
+
+    System_Ext(payment, "第三方支付", "提供支付与退款能力")
+    System_Ext(sms, "短信平台", "验证码与通知短信")
+    System_Ext(logistics, "物流平台", "运单创建与轨迹查询")
+
+    Rel(customer, ecommerce, "使用", "HTTPS")
+    Rel(operator, ecommerce, "管理", "HTTPS")
+    Rel(ecommerce, payment, "发起支付/退款", "HTTPS API")
+    Rel(ecommerce, sms, "发送通知", "HTTPS API")
+    Rel(ecommerce, logistics, "创建运单/查询轨迹", "HTTPS API")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

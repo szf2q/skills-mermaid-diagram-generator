@@ -1,0 +1,17 @@
+%% C4 动态图：退款场景
+%% 用途：表达一次关键业务场景中容器/组件的协作顺序
+C4Dynamic
+    title 退款处理动态图
+
+    Container(web, "Web 前端", "Vue 3", "面向顾客的商城页面")
+    Container(gw, "API 网关", "Spring Cloud Gateway", "统一入口与鉴权")
+    Container(pay, "支付服务", "Spring Boot", "退款与对账")
+    Container(order, "订单服务", "Spring Boot", "订单状态流转")
+    ContainerQueue(mq, "消息队列", "Kafka 3.x", "异步事件")
+    ContainerDb(db, "订单库", "MySQL 8.0", "订单与支付数据")
+
+    RelIndex(1, web, gw, "提交退款申请")
+    RelIndex(2, gw, pay, "发起退款")
+    RelIndex(3, pay, mq, "发布退款事件")
+    RelIndex(4, mq, order, "投递退款结果")
+    RelIndex(5, order, db, "更新订单为已退款")
