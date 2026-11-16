@@ -1,0 +1,32 @@
+%% C4 容器图：电商平台
+%% 用途：表达系统内部容器边界、技术选型与容器间依赖
+C4Container
+    title 电商平台容器图
+
+    Person(customer, "顾客", "浏览、下单、支付与售后")
+
+    System_Boundary(shop, "电商平台") {
+        Container(web, "Web 前端", "Vue 3", "面向顾客的商城页面")
+        Container(gw, "API 网关", "Spring Cloud Gateway", "统一入口、鉴权与限流")
+        Container(order, "订单服务", "Spring Boot", "订单创建与状态流转")
+        Container(pay, "支付服务", "Spring Boot", "支付、退款与对账")
+        Container(stock, "库存服务", "Spring Boot", "库存预占与扣减")
+        ContainerDb(db, "业务数据库", "MySQL 8.0", "订单、支付与库存数据")
+        ContainerDb(cache, "缓存", "Redis 7", "会话与热点数据")
+        ContainerQueue(mq, "消息队列", "Kafka 3.x", "异步事件与削峰")
+    }
+
+    System_Ext(payment, "第三方支付", "提供支付与退款能力")
+
+    Rel(customer, web, "访问", "HTTPS")
+    Rel(web, gw, "调用 API", "JSON/HTTPS")
+    Rel(gw, order, "路由订单请求", "HTTP")
+    Rel(gw, pay, "路由支付请求", "HTTP")
+    Rel(order, stock, "预占库存", "gRPC")
+    Rel(order, db, "读写订单", "JDBC")
+    Rel(order, cache, "读写缓存", "RESP")
+    Rel(pay, payment, "发起支付", "HTTPS API")
+    Rel(pay, mq, "发布支付事件", "Kafka 协议")
+    Rel(mq, order, "投递支付结果", "Kafka 协议")
+
+    UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="1")

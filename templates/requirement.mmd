@@ -1,0 +1,43 @@
+%% 需求图：订单系统需求追溯
+%% 用途：表达需求、风险、验证方式以及设计元素对需求的满足关系
+requirementDiagram
+    requirement order_submit {
+        id: R001
+        text: "用户可在 3 步内完成下单"
+        risk: medium
+        verifymethod: test
+    }
+
+    functionalRequirement payment_idempotent {
+        id: R002
+        text: "支付回调必须幂等处理"
+        risk: high
+        verifymethod: test
+    }
+
+    performanceRequirement order_p99 {
+        id: R003
+        text: "下单接口 P99 小于 300ms"
+        risk: medium
+        verifymethod: analysis
+    }
+
+    interfaceRequirement pay_callback {
+        id: R004
+        text: "支付平台回调需在 5 秒内返回应答"
+        risk: high
+        verifymethod: inspection
+    }
+
+    element order_service {
+        type: simulation
+    }
+
+    element payment_callback {
+        type: simulation
+    }
+
+    order_service - satisfies -> order_submit
+    order_service - satisfies -> order_p99
+    payment_callback - satisfies -> payment_idempotent
+    payment_callback - satisfies -> pay_callback

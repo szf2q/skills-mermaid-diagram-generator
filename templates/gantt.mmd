@@ -1,0 +1,20 @@
+%% 甘特图：电商平台迭代开发计划
+%% 用途：表达任务、工期、依赖关系与里程碑
+gantt
+    title 电商平台迭代开发计划
+    dateFormat  YYYY-MM-DD
+    axisFormat  %m-%d
+    excludes    weekends
+
+    section 需求与设计
+    需求梳理           :done,    req1, 2026-11-02, 4d
+    架构设计           :active,  arch1, after req1, 3d
+
+    section 开发
+    订单服务开发       :dev1, after arch1, 6d
+    支付服务开发       :dev2, after arch1, 5d
+    前端联调           :dev3, after dev1, 4d
+
+    section 测试与上线
+    集成测试           :test1, after dev3, 4d
+    灰度发布           :milestone, rel1, after test1, 0d

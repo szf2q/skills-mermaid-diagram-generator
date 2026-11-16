@@ -1,0 +1,40 @@
+%% 泳道图：跨职能退款流程
+%% 用途：按角色/系统划分泳道，表达跨部门协作与责任流转
+flowchart LR
+    subgraph CUST["顾客"]
+        direction TB
+        A1["提交退款申请"]
+        A2["补充凭证"]
+        A3["收到退款"]
+    end
+
+    subgraph CS["客服"]
+        direction TB
+        B1["受理退款"]
+        B2{"是否符合退款政策"}
+        B3["拒绝并说明原因"]
+    end
+
+    subgraph FIN["财务"]
+        direction TB
+        C1["审核退款金额"]
+        C2["执行退款"]
+    end
+
+    subgraph PAY["支付平台"]
+        direction TB
+        D1["原路退回"]
+        D2["回传退款结果"]
+    end
+
+    A1 --> B1
+    B1 --> B2
+    B2 -- 否 --> B3
+    B3 --> A3
+    B2 -- 是 --> C1
+    B2 -. 材料不足 .-> A2
+    A2 --> B1
+    C1 --> C2
+    C2 --> D1
+    D1 --> D2
+    D2 --> A3

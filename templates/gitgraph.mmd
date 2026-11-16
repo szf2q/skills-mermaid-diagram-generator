@@ -1,0 +1,17 @@
+%% Git 图：订单域分支策略
+%% 用途：表达分支、提交、合并与发布标签
+gitGraph
+    commit id: "init"
+    commit id: "feat: 订单创建"
+    branch develop
+    checkout develop
+    commit id: "feat: 库存预占"
+    commit id: "fix: 幂等校验"
+    checkout main
+    merge develop id: "release: v1.0" tag: "v1.0"
+    commit id: "hotfix: 支付回调超时"
+    branch feature-refund
+    checkout feature-refund
+    commit id: "feat: 退款流程"
+    checkout develop
+    merge feature-refund id: "merge: 退款流程"

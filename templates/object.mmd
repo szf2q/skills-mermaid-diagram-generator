@@ -1,0 +1,38 @@
+%% 对象图：订单领域对象快照
+%% 用途：表达某一时刻的对象实例、属性取值与对象间链接
+%% 说明：Mermaid 无独立 objectDiagram，使用 classDiagram 的实例命名表达
+classDiagram
+    class cust1["cust1 : CUSTOMER"] {
+        id = 1001
+        username = "alice"
+        phone = "138****0000"
+    }
+
+    class order1["order1 : ORDER"] {
+        orderNo = "SO202611100001"
+        amount = 299.00
+        status = "PAID"
+    }
+
+    class item1["item1 : ORDER_ITEM"] {
+        productId = 2001
+        quantity = 2
+        price = 99.50
+    }
+
+    class item2["item2 : ORDER_ITEM"] {
+        productId = 2002
+        quantity = 1
+        price = 100.00
+    }
+
+    class pay1["pay1 : PAYMENT"] {
+        payNo = "PAY202611100001"
+        amount = 299.00
+        status = "SUCCESS"
+    }
+
+    cust1 "1" --> "1" order1 : 拥有
+    order1 "1" *-- "1" item1 : 包含
+    order1 "1" *-- "1" item2 : 包含
+    order1 "1" --> "1" pay1 : 支付
